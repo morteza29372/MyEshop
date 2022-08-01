@@ -1,12 +1,14 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using MyEshop.Data;
 
 namespace MyEshop
 {
@@ -23,6 +25,13 @@ namespace MyEshop
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            #region Db Context
+
+            services.AddDbContext<MyEshopContext>(options =>
+            { options.UseSqlServer("Data Source =.;Initial Catalog=EshopCore_DB;Integrated Security=true"); });
+
+            #endregion
 
         }
 
