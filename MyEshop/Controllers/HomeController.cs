@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using MyEshop.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace MyEshop.Controllers
 {
@@ -27,7 +28,29 @@ namespace MyEshop.Controllers
             return View(product);
         }
 
-        public IActionResult Detail()
+        public IActionResult Detail(int id)
+        {
+            var product = _context.Products.Include(c => c.Item).
+                SingleOrDefault(p => p.ID == id);
+
+            if(product==null)
+            {
+                return NotFound();
+            }
+
+            var categories = _context.Products.Where(p => p.ID == id).
+                SelectMany(c => c.CategoryToProducts).Select(ca => ca.Category).ToList();
+
+            var vm = new DetailViewModel
+            {
+                categories = categories,
+                Product = product
+
+            };
+            return View(vm);
+        }
+
+        public IActionResult AddToCart( int ItemId)
         {
             return null;
         }
