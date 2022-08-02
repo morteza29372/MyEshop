@@ -1,4 +1,7 @@
-﻿namespace MyEshop.Models
+﻿using System.Collections;
+using System.Collections.Generic;
+
+namespace MyEshop.Models
 {
     public class Category
     {
@@ -6,5 +9,8 @@
 
         public string Name { get; set; }
         public string Description { get; set; }
+
+
+        public ICollection<CategoryToProduct> CategoryToProduct { get; set; }
     }
 }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using MyEshop.Data;
 
 namespace MyEshop.Controllers
 {
@@ -13,14 +14,22 @@ namespace MyEshop.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        private MyEshopContext _context;
+        public HomeController(ILogger<HomeController> logger, MyEshopContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var product = _context.Products.ToList();
+            return View(product);
+        }
+
+        public IActionResult Detail()
+        {
+            return null;
         }
 
         public IActionResult ContactUs()
