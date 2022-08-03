@@ -15,7 +15,7 @@ namespace MyEshop.Models
 
         public  void AddItem(CartItem item)
         {
-            if (cartItems.Exists(i => i.item.ID == item.ID))
+            if (cartItems.Exists(i => i.item.ID == item.item.ID))
             {
                 cartItems.Find(i => i.item.ID == item.item.ID)
                     .Quantity += 1;

@@ -16,6 +16,8 @@ namespace MyEshop.Controllers
         private readonly ILogger<HomeController> _logger;
 
         private MyEshopContext _context;
+
+        private static Cart _cart = new Cart();
         public HomeController(ILogger<HomeController> logger, MyEshopContext context)
         {
             _logger = logger;
@@ -52,8 +54,34 @@ namespace MyEshop.Controllers
 
         public IActionResult AddToCart( int ItemId)
         {
-            return null;
+            var product = _context.Products.Include(i => i.Item).SingleOrDefault(p => p.Item.ID == ItemId);
+            if(product != null) 
+            {
+                var cartitem = new CartItem
+                {
+                    item = product.Item,
+                    Quantity = 1
+                };
+                _cart.AddItem(cartitem);
+
+
+            }
+
+          return  RedirectToAction("ShowCart");
+          
         }
+
+        public IActionResult ShowCart()
+        {
+            var cartvm = new CartViewModel
+            {
+                cartItems=_cart.cartItems,
+                OrderTotal=_cart.cartItems.Sum(C=> C.GetTotalPrice())
+            };
+
+            return View(cartvm);
+        }
+
 
         public IActionResult ContactUs()
         {

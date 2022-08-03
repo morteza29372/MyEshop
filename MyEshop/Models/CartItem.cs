@@ -9,7 +9,7 @@
 
         public decimal GetTotalPrice()
         {
-            return item.Price = Quantity;
+            return item.Price * Quantity;
         }
     }
 }
