@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MyEshop.Data;
+using MyEshop.Data.Repository;
 
 namespace MyEshop
 {
@@ -30,6 +31,12 @@ namespace MyEshop
 
             services.AddDbContext<MyEshopContext>(options =>
             { options.UseSqlServer("Data Source =.;Initial Catalog=EshopCore_DB;Integrated Security=true"); });
+
+            #endregion
+
+            #region IOC
+
+            services.AddScoped<IGroupRepository, GroupRepository>();
 
             #endregion
 
