@@ -9,6 +9,8 @@
     <Compile Remove="Migrations\20220801153451_Initial-Database.Designer.cs" />
     <Compile Remove="Migrations\20220801160629_SeedCategry.cs" />
     <Compile Remove="Migrations\20220801160629_SeedCategry.Designer.cs" />
+    <Compile Remove="Migrations\20220806104447_InitUser.cs" />
+    <Compile Remove="Migrations\20220806104447_InitUser.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
