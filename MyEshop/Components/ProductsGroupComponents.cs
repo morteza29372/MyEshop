@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using MyEshop.Data;
 using System.Threading.Tasks;
+using MyEshop.Models;
 
 namespace MyEshop.Components
 {
@@ -14,7 +16,18 @@ namespace MyEshop.Components
         }
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            return View("/Views/Components/ProductGroupsComponents.cshtml", _Context.Categories);
+
+
+            var categories = _Context.Categories
+                .Select(c => new ShowGroupViewModel()
+                {
+                    GroupId = c.ID,
+                    Name = c.Name,
+                    ProductCount = _Context.CategoryToProducts.Count(g => g.CategoryID==c.ID)
+
+                }).ToList();
+
+            return View("/Views/Components/ProductGroupsComponents.cshtml", categories);
         }
     }
 }

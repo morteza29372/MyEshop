@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MyEshop.Data;
 
 namespace MyEshop.Controllers
@@ -14,7 +16,13 @@ namespace MyEshop.Controllers
         [Route("Group/{id}/{name}")]
         public IActionResult ShowProductByGroupId(int id,string name)
         {
-            return View();
+            ViewData["GroupName"] = name;
+            var product = _context.CategoryToProducts
+                .Where(c => c.CategoryID == id).
+                Include(p => p.Product)
+                .Select(pr => pr.Product).ToList();
+
+            return View(product);
         }
     }
 }
