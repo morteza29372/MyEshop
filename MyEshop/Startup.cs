@@ -37,7 +37,7 @@ namespace MyEshop
             #region IOC
 
             services.AddScoped<IGroupRepository, GroupRepository>();
-
+            services.AddScoped<IUserRepository, UserRepository>();
             #endregion
 
         }
