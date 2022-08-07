@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using MyEshop.Data.Repository;
 using MyEshop.Models;
@@ -13,6 +17,9 @@ namespace MyEshop.Controllers
         {
             _userRepository = userRepository;
         }
+
+        #region Register
+
         public IActionResult Register()
         {
             return View();
@@ -44,5 +51,63 @@ namespace MyEshop.Controllers
 
             return View("RegisterSuccess",register);
         }
+
+        #endregion
+
+        #region Login
+
+        public IActionResult Login()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult Login(LoginViewModel login)
+        {
+            if (!ModelState.IsValid)
+            {
+
+                return View(login);
+            }
+
+            var user = _userRepository.GetUserForLogin(login.Email, login.Password);
+            if (user==null)
+            {
+                ModelState.AddModelError("Email","اطلاعات صحیح نمی باشد!!!");
+                return View(login);
+            }
+
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
+                new Claim(ClaimTypes.Name, user.Email),
+                // new Claim("CodeMeli", user.Email),
+
+            };
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+            var principal = new ClaimsPrincipal(identity);
+
+            var properties = new AuthenticationProperties
+            {
+                IsPersistent = login.RememberMe
+            };
+
+            HttpContext.SignInAsync(principal, properties);
+
+            return Redirect("/");
+        }
+
+
+        #endregion
+
+        #region LogOut
+
+        public IActionResult Logout()
+        {
+            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return Redirect("/Account/Login");
+        }
+
+        #endregion
     }
 }

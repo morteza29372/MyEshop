@@ -9,6 +9,8 @@ namespace MyEshop.Data.Repository
         bool IsExistByEmail(string Email);
 
         void AddUser(Users user);
+
+        Users GetUserForLogin(string Email, string password);
     }
 
     
@@ -25,6 +27,11 @@ namespace MyEshop.Data.Repository
         {
             _Context.Add(user);
             _Context.SaveChanges();
+        }
+
+        public Users GetUserForLogin(string Email, string password)
+        {
+            return _Context.Users.SingleOrDefault(u => u.Email == Email && u.Password == password);
         }
 
         public bool IsExistByEmail(string Email)

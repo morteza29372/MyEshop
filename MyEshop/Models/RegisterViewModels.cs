@@ -26,4 +26,24 @@ namespace MyEshop.Models
         public string RePassword { get; set; }
 
     }
+
+    public class LoginViewModel
+    {
+
+        [Required(ErrorMessage = "لطفا{0} را وارد کنید")]
+        [MaxLength(300)]
+        [EmailAddress]
+        [DisplayName("ایمیل")]
+        public string Email { get; set; }
+
+        [Required(ErrorMessage = "لطفا{0} را وارد کنید")]
+        [MaxLength(50)]
+        [DataType(DataType.Password)]
+        [DisplayName("پسوورد")]
+        public string Password { get; set; }
+
+        [DisplayName("مرا به خاطر بسپار؟")]
+        public bool RememberMe { get; set; }
+
+    }
 }
