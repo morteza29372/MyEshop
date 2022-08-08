@@ -16,5 +16,7 @@ namespace MyEshop.Models
         public ICollection<CategoryToProduct> CategoryToProducts { get; set; }
 
         public Item Item { get; set; }
+
+        public List<OrderDetail> orderDetails { get; set; }
     }
 }

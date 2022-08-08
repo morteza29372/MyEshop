@@ -8,6 +8,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using MyEshop.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace MyEshop.Controllers
 {
@@ -17,7 +19,7 @@ namespace MyEshop.Controllers
 
         private MyEshopContext _context;
 
-        private static Cart _cart = new Cart();
+       
         public HomeController(ILogger<HomeController> logger, MyEshopContext context)
         {
             _logger = logger;
@@ -52,36 +54,82 @@ namespace MyEshop.Controllers
             return View(vm);
         }
 
+
+        [Authorize]
         public IActionResult AddToCart( int ItemId)
         {
             var product = _context.Products.Include(i => i.Item).SingleOrDefault(p => p.Item.ID == ItemId);
             if(product != null) 
             {
-                var cartitem = new CartItem
+                int userid = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier).ToString());
+                var order = _context.Orders.FirstOrDefault(o => o.UserId == userid && !o.IsFinaly);
+                if (order != null)
                 {
-                    item = product.Item,
-                    Quantity = 1
-                };
-                _cart.AddItem(cartitem);
+                    var orderdetail = _context.OrderDetails
+                        .FirstOrDefault(o => o.OrderId == order.OrderId && o.ProductId == product.ID);
 
+                    if (orderdetail != null)
+                    {
+                        orderdetail.Count += 1;
+                    }
+                    else
+                    {
+                        _context.OrderDetails.Add(new OrderDetail()
+                        {
+                            OrderId = order.OrderId,
+                            ProductId = product.ID,
+                            Price = product.Item.Price,
+                            Count = 1
+                        });
 
+                    }
+                }
+                else
+                {
+                    order = new Order()
+                    {
+                        IsFinaly=false,
+                        CreateDate=DateTime.Now,
+                        UserId=userid
+
+                    };
+                    _context.Orders.Add(order);
+                    _context.SaveChanges();
+                    _context.OrderDetails.Add(new OrderDetail()
+                    {
+                        OrderId=order.OrderId,
+                        ProductId=product.ID,
+                        Price=product.Item.Price,
+                        Count=1
+                    });
+                    
+                }
+                _context.SaveChanges();
             }
 
           return  RedirectToAction("ShowCart");
           
         }
 
+        [Authorize]
         public IActionResult ShowCart()
         {
-            var cartvm = new CartViewModel
-            {
-                cartItems=_cart.cartItems,
-                OrderTotal=_cart.cartItems.Sum(C=> C.GetTotalPrice())
-            };
+            int userid = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier).ToString());
 
-            return View(cartvm);
+            var order = _context.Orders.Where(o => o.UserId == userid&& !o.IsFinaly).
+                Include(o => o.OrderDetails).
+                ThenInclude(o => o.Product).FirstOrDefault();
+
+            return View(order);
         }
 
+        public IActionResult RemoveCart(int DetailId)
+        {
+            var orderdetail = _context.OrderDetails.Find(DetailId);
+            _context.Remove(orderdetail);
+            _context.SaveChanges();
+            return RedirectToAction("ShowCart");
+        }
 
         public IActionResult ContactUs()
         {

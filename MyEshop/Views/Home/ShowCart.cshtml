@@ -1,8 +1,10 @@
-﻿@model CartViewModel
+﻿@model Order
 @{
     ViewData["Title"] = "سبد خرید";
 }
-
+@if(@Model!=null)
+{
+    
 <table class="table table-striped">
     <thead class="thead-dark">
     <tr>
@@ -14,19 +16,25 @@
     </thead>
     
     <tbody>
-    @foreach (var item in Model.cartItems)
+    @foreach (var item in Model.OrderDetails)
     {
         <tr>
-            <td>@item.item.product.Name</td>
-            <td>@item.Quantity</td>
-            <td>@item.GetTotalPrice()</td>
+            <td>@item.Product.Name</td>
+            <td>@item.Count</td>
+            <td>@(item.Count*item.Price)</td>
             <td>
-                <a asp-action="RemoveCart" asp-route-itemId="@item.item.ID">حذف</a>
+                <a asp-action="RemoveCart" asp-route-DetailId="@item.DetailId">حذف</a>
             </td>
         </tr>
     }
     </tbody>
 
 </table>
-<h5>جمع کل : @Model.OrderTotal</h5>
+<h5>جمع کل : @Model.OrderDetails.Sum(o=> o.Count*o.Price)</h5>
 
+
+}
+else
+{
+    <div class="alert alert-danger">فاکتوری نیست</div>
+}
