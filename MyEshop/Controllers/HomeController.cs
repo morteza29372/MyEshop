@@ -126,8 +126,18 @@ namespace MyEshop.Controllers
         public IActionResult RemoveCart(int DetailId)
         {
             var orderdetail = _context.OrderDetails.Find(DetailId);
-            _context.Remove(orderdetail);
-            _context.SaveChanges();
+            if (orderdetail.Count > 1)
+            {
+                orderdetail.Count -= 1;
+                _context.Entry(orderdetail);
+                _context.SaveChanges();
+            }
+            else
+            {
+                _context.Remove(orderdetail);
+                _context.SaveChanges();
+            }
+           
             return RedirectToAction("ShowCart");
         }
 
