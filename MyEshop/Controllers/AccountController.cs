@@ -80,6 +80,7 @@ namespace MyEshop.Controllers
             {
                 new Claim(ClaimTypes.NameIdentifier, user.UserID.ToString()),
                 new Claim(ClaimTypes.Name, user.Email),
+                new Claim("IsAdmin", user.IsAdmin.ToString()),
                 // new Claim("CodeMeli", user.Email),
 
             };

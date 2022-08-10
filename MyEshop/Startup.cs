@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -74,7 +75,22 @@ namespace MyEshop
            
             app.UseAuthorization();
 
-            app.UseAuthorization();
+            app.Use(async (Context, next) =>
+            {
+                if (Context.Request.Path.StartsWithSegments("/Admin"))
+                {
+                    if (!Context.User.Identity.IsAuthenticated)
+                    {
+                        Context.Response.Redirect("/Account/Login");
+                    }
+                    else if (!bool.Parse(Context.User.FindFirstValue("IsAdmin")))
+                    {
+                        Context.Response.Redirect("/Account/Login");
+                    }
+                }
+
+                await next.Invoke();
+            });
 
             app.UseEndpoints(endpoints =>
             {
