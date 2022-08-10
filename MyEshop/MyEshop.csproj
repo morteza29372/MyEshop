@@ -30,6 +30,7 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
+    <Folder Include="Pages\Admin\ManageUser\" />
   </ItemGroup>
 
 </Project>

@@ -31,8 +31,8 @@
                 @item.Item.Price
             </td>
             <td>
-                <a>حذف</a>
-                <a>ویرایش</a>
+                <a class="btn btn-danger" asp-page="Delete" asp-route-id="@item.ID">حذف</a>
+                <a class="btn btn-info" asp-page="Edit" asp-route-id="@item.ID">ویرایش</a>
             </td>
         </tr>
     }
