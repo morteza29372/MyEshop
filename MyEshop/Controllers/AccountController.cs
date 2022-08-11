@@ -33,11 +33,11 @@ namespace MyEshop.Controllers
                 return View("Register");  
             }
 
-            if (_userRepository.IsExistByEmail(register.Email.ToLower()))
-            {
-                ModelState.AddModelError("Email","این ایمیل قبلا ثبت نام شده است");
-                return View("Register");
-            }
+            //if (_userRepository.IsExistByEmail(register.Email.ToLower()))
+            //{
+            //    ModelState.AddModelError("Email","این ایمیل قبلا ثبت نام شده است");
+            //    return View("Register");
+            //}
 
             var user = new Users()
             {
@@ -50,6 +50,16 @@ namespace MyEshop.Controllers
             _userRepository.AddUser(user);
 
             return View("RegisterSuccess",register);
+        }
+
+        public IActionResult VerifyEmail(string email)
+        {
+            if (_userRepository.IsExistByEmail(email.ToLower()))
+            {
+                return Json($"ایمیل {email} تکراری است!!!");
+            }
+
+            return Json(true);
         }
 
         #endregion
