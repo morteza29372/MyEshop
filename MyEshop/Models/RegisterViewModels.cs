@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MyEshop.Models
 {
@@ -10,6 +11,7 @@ namespace MyEshop.Models
         [MaxLength(300)]
         [EmailAddress]
         [DisplayName("ایمیل")]
+        [Remote("VerifyEmail","Account")]
         public string Email { get; set; }
 
         [Required(ErrorMessage = "لطفا{0} را وارد کنید")]
