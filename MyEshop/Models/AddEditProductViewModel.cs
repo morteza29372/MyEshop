@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 
 namespace MyEshop.Models
 {
@@ -12,5 +13,7 @@ namespace MyEshop.Models
         //baraye upload File
         public IFormFile Picture { get; set; }
 
+        public List<Category> Categories { get; set; }
+        public List<int> SelectedGroups { get; set; }
     }
 }

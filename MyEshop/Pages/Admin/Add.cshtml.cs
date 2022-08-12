@@ -1,8 +1,10 @@
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using MyEshop.Data;
 using MyEshop.Models;
 using System.IO;
+using System.Linq;
 
 namespace MyEshop.Pages.Admin
 {
@@ -16,10 +18,19 @@ namespace MyEshop.Pages.Admin
         }
 
         [BindProperty]
-        public AddEditProductViewModel Product{ get; set; }
+        public AddEditProductViewModel Product { get; set; }
+
+        [BindProperty]
+        public List<int> SelectedGroups { get; set; }
+
 
         public void OnGet()
         {
+            Product = new AddEditProductViewModel()
+            {
+                Categories = _context.Categories.ToList()
+            };
+
         }
 
         public IActionResult OnPost()
@@ -51,15 +62,29 @@ namespace MyEshop.Pages.Admin
 
             if (Product.Picture?.Length > 0)
             {
-                string filepath = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot",
-                    "Images",pro.ID+Path.GetExtension(Product.Picture.FileName));
+                string filepath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot",
+                    "Images", pro.ID + Path.GetExtension(Product.Picture.FileName));
 
-                using (var stream=new FileStream(filepath,FileMode.Create))
+                using (var stream = new FileStream(filepath, FileMode.Create))
                 {
                     Product.Picture.CopyTo(stream);
                 }
             }
 
+            if (SelectedGroups.Any() && SelectedGroups.Count > 0)
+            {
+                foreach (int gr in SelectedGroups)
+                {
+                    _context.CategoryToProducts.Add(new CategoryToProduct()
+                    {
+                        CategoryID = gr,
+                        ProductID = pro.ID
+                    });
+
+                }
+
+                _context.SaveChanges();
+            }
 
             return RedirectToPage("Index");
         }

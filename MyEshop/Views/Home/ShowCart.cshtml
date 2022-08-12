@@ -30,9 +30,9 @@
     </tbody>
 
 </table>
-<h5>جمع کل : @Model.OrderDetails.Sum(o=> o.Count*o.Price)</h5>
+    <h5>جمع کل : @Model.OrderDetails.Sum(o=> o.Count*o.Price)</h5>
 
-
+    <a asp-action="Payment" class="btn btn-success">پرداخت</a>
 }
 else
 {
